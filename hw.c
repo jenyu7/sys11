@@ -8,16 +8,17 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 char ** parse_args( char * line )
 {
-  char ** args = (char **)malloc(sizeof(char **));
+  char ** args = calloc(256, 256);
+  char * ptr;
   int i = 0;
-  while(line)
+  while(ptr)
     {
-      printf("here\n");
-      args[i] = strsep(&line, " ");
-      printf("now here \n");
+      ptr = strsep(&line, " ");
+      args[i] = ptr;
       i ++;
     }
   return args;
@@ -30,7 +31,28 @@ int main()
   char *s1 = line;
   printf("[%s]\n", strsep( &s1, "-" ));
   printf("[%s]\n", s1);
-  ********/
-  parse_args("ls -a -l");
+  **************************/
+
+  //expected: dir permissions in a list with the '.' and '..'
+  char ls[20] = "ls -l -a ..";
+  char less[20] = "less dummy0.txt";
+
+  //need to pass suitable arguments for parse_args!!
+  //cannot simply pass ls [above]
+  char *line = less; //ls;
+  char **cmd = parse_args(line);
+  
+  /****diagnostic****
+  int i = 0;
+  while(cmd[i])
+    {
+      printf("arg %d: %s\n", i, cmd[i]);
+      i ++;
+    }
+  *******************/
+
+  //execute command
+  execvp(cmd[0], cmd);
+  
   return 0;
 }
