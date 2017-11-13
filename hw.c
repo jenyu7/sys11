@@ -12,15 +12,9 @@
 
 char ** parse_args( char * line )
 {
-  char ** args = calloc(256, 256);
-  char * ptr;
+  char ** args = (char **)malloc(6 * sizeof(char *));
   int i = 0;
-  while(ptr)
-    {
-      ptr = strsep(&line, " ");
-      args[i] = ptr;
-      i ++;
-    }
+  while( (args[i++] = strsep(&line, " ")) );
   return args;
 }
 
@@ -41,7 +35,7 @@ int main()
   //cannot simply pass ls [above]
   char *line = less; //ls;
   char **cmd = parse_args(line);
-  
+
   /****diagnostic****
   int i = 0;
   while(cmd[i])
@@ -53,6 +47,6 @@ int main()
 
   //execute command
   execvp(cmd[0], cmd);
-  
+
   return 0;
 }
